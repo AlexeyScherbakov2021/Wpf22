@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using Wpf22.Models;
@@ -57,5 +58,17 @@ namespace Wpf22.Services
 
         }
 
+        public string GetStringValue(string Message, string Caption, string DefaultValue = null)
+        {
+            var value_dialog = new StringValueDialogWindow
+            {
+                Message = Message,
+                Title = Caption,
+                Value = DefaultValue ?? String.Empty
+                //Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsFocused)
+            };
+
+            return value_dialog.ShowDialog() == true ? value_dialog.Value : DefaultValue;
+        }
     }
 }

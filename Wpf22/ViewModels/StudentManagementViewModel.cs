@@ -66,6 +66,16 @@ namespace Wpf22.ViewModels
 
         }
 
+        private ICommand _TestCommand;
+        public ICommand TestCommand => _TestCommand ??= new LambdaCommand(OnTestCommandExecute, CanTestCommandExecute);
+        private bool CanTestCommandExecute(object p) => true;
+        private void OnTestCommandExecute(object p)
+        {
+            var value = _UserDialog.GetStringValue("Введите строку","123","Значение по умлочанию");
+            _UserDialog.ShowInformation($"Введено: {value}","123");
+        }
+
+
         public StudentManagementViewModel(StudentManager StudentManager, IUserDialogService UserDialog) 
         { 
             _StudentManager = StudentManager;
