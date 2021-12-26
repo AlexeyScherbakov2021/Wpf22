@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using Wpf22.Models;
 using Wpf22.Services.Interfaces;
+using Wpf22.Views;
 
 namespace Wpf22.Services
 {
@@ -15,10 +16,12 @@ namespace Wpf22.Services
 
         public bool Edit(object item)
         {
+            if (item is null) throw new ArgumentNullException(nameof(item));
+
             switch (item)
             {
                 case Student student:
-                    break;
+                    return EditStudent(student);
                 default:
                     throw new NotSupportedException($"Редактирование объекта типа {item.GetType().Name} не поддерживается");
                     
@@ -27,12 +30,30 @@ namespace Wpf22.Services
 
         public void ShowError(string Message, string Caption) => MessageBox.Show(Message, Caption, MessageBoxButton.OK, MessageBoxImage.Error);
 
-        public void ShowInformation(string Information, string Caption) => MessageBox.Show(Message, Caption, MessageBoxButton.OK, MessageBoxImage.Information);
+        public void ShowInformation(string Information, string Caption) => MessageBox.Show(Information, Caption, MessageBoxButton.OK, MessageBoxImage.Information);
 
         public void ShowWarning(string Message, string Caption) => MessageBox.Show(Message, Caption, MessageBoxButton.OK, MessageBoxImage.Warning);
 
-        private static bool EditStudent(Student student
+        private static bool EditStudent(Student student)
         {
+            var dlg = new StudentEditorWindow
+            {
+                FirstName = student.Name,
+                LastName = student.Surname,
+                Patronymic = student.Patronymic,
+                Rating = student.Rating,
+                BirthDay = student.Birthday
+            };
+
+            if (dlg.ShowDialog() != true) return false;
+
+            student.Name = dlg.FirstName;
+            student.Surname = dlg.LastName;
+            student.Patronymic = dlg.Patronymic;
+            student.Rating = dlg.Rating;
+            student.Birthday = dlg.BirthDay;
+
+            return true;
 
         }
 

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Wpf22.Services;
+using Wpf22.Services.Interfaces;
 
 namespace Wpf22.ViewModels
 {
@@ -12,6 +14,7 @@ namespace Wpf22.ViewModels
             services.AddSingleton<MainWindowViewModel>();
             services.AddTransient<StudentManagementViewModel>();
 
+            services.AddTransient<IUserDialogService, WindowsUserDialogService>();
             return services;
         }
     } 

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using Wpf22.Infrastructire.Commands;
 using Wpf22.Models;
+using Wpf22.Services.Interfaces;
 using Wpf22.Services.Students;
 using Wpf22.Views;
 
@@ -13,6 +14,8 @@ namespace Wpf22.ViewModels
     internal class StudentManagementViewModel : ViewModel
     {
         private StudentManager _StudentManager;
+        private IUserDialogService _UserDialog;
+
         public string Title { get; set; } = "Управление студентами";
 
         public IEnumerable<Student> Students => _StudentManager.Students;
@@ -29,48 +32,45 @@ namespace Wpf22.ViewModels
         private ICommand _EditStudentCommand;
         public ICommand EditStudentCommand => _EditStudentCommand ??= new LambdaCommand(OnEditStudentCommandExecute, CanEditStudentCommandExecute);
         //{
-        //    if(_EditStudentCommand == null)
-        //        _EditStudentCommand = new LambdaCommand(OnEditStudentCommandExecute, CanEditStudentCommandExecute);
-
-        //    return _EditStudentCommand;
-        //} 
         private bool CanEditStudentCommandExecute(object p) => p is Student;
         private void OnEditStudentCommandExecute(object p)
         {
-            var student = (Student)p;
-
-            var dlg = new StudentEditorWindow
+            if (_UserDialog.Edit(p))
             {
-                FirstName = student.Name,
-                LastName = student.Surname,
-                Patronymic = student.Patronymic,
-                Rating = student.Rating,
-                BirthDay = student.Birthday
-            };
+                _StudentManager.Update((Student)p);
 
-            if (dlg.ShowDialog() == true)
-                MessageBox.Show("Редактирование выполнено.");
+                _UserDialog.ShowInformation("Студент отредавтирован", "Менеджер студентов");
+            }
             else
-                MessageBox.Show("Пользователь отказался.");
+                _UserDialog.ShowWarning("Отказ от редактирования", "Менеджер студентов");
+
         }
 
         private ICommand _CreateNewStudentCommand;
         public ICommand CreateNewStudentCommand  => _CreateNewStudentCommand ??= new LambdaCommand(OnCreateNewStudentCommandExecute, CanCreateNewStudentCommandExecute);
-        //{
-        //    if (_CreateNewStudentCommand == null)
-        //        _CreateNewStudentCommand = new LambdaCommand(OnCreateNewStudentCommandExecute, CanCreateNewStudentCommandExecute);
 
-        //    return _CreateNewStudentCommand;
-        //}
         private bool CanCreateNewStudentCommandExecute(object p) => p is Group;
         private void OnCreateNewStudentCommandExecute(object p)
         {
             var group = (Group)p;
 
+            var student = new Student();
+            if(!_UserDialog.Edit(student) || _StudentManager.Create(student, group.Name))
+            {
+                OnPropertyChanged(nameof(student));
+                return;
+            }
+
+            if (_UserDialog.Confirm("Не удалось создать студента. Повторить?", "Менеджер студентов"))
+                    OnCreateNewStudentCommandExecute(p);
 
         }
 
+        public StudentManagementViewModel(StudentManager StudentManager, IUserDialogService UserDialog) 
+        { 
+            _StudentManager = StudentManager;
+            _UserDialog = UserDialog;
+        }
 
-        public StudentManagementViewModel(StudentManager StudentManager) { _StudentManager = StudentManager; }
     }
 }

@@ -86,10 +86,5 @@ namespace Wpf22.Views
             InitializeComponent();
         }
 
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            FirstName = "5555555555555";
-        }
     }
 }

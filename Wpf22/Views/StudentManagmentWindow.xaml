@@ -37,7 +37,7 @@
             <DockPanel>
                 <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="-3, 3">
                     <Button fa:Awesome.Content="Solid_Plus" Foreground="Green" Padding="0,5" Margin="3,0"
-                            Command="{Binding CreateNewStudentCommand}" CommandParameter="{Binding SelectedStudent}"/>
+                            Command="{Binding CreateNewStudentCommand}" CommandParameter="{Binding SelectedGroup}"/>
                     <Button fa:Awesome.Content="Solid_Edit" Foreground="Blue" Padding="0,5" Margin="3,0"
                             Command="{Binding EditStudentCommand}" CommandParameter="{Binding SelectedStudent}"/>
                 </UniformGrid>
