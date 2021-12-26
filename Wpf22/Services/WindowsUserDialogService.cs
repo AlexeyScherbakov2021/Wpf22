@@ -11,6 +11,8 @@ namespace Wpf22.Services
 {
     internal class WindowsUserDialogService : IUserDialogService
     {
+        private static Window ActiveWindow => Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+
         public bool Confirm(string Message, string Caption, bool Exclamation = false) =>
             MessageBox.Show(Message, Caption, MessageBoxButton.YesNo, Exclamation ? MessageBoxImage.Exclamation : MessageBoxImage.Question)
                 == MessageBoxResult.Yes;
@@ -64,8 +66,8 @@ namespace Wpf22.Services
             {
                 Message = Message,
                 Title = Caption,
-                Value = DefaultValue ?? String.Empty
-                //Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsFocused)
+                Value = DefaultValue ?? String.Empty,
+                Owner = ActiveWindow
             };
 
             return value_dialog.ShowDialog() == true ? value_dialog.Value : DefaultValue;

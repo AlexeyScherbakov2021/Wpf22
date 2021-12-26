@@ -15,7 +15,7 @@ namespace Wpf22.Views
     /// <summary>
     /// Логика взаимодействия для StringValueDialogWindow.xaml
     /// </summary>
-    public partial class StringValueDialogWindow : Window
+    public partial class StringValueDialogWindow 
     {
         public string Message { get => MessageTextBlock.Text; set => MessageTextBlock.Text = value; }
 
